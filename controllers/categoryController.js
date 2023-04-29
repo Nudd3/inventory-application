@@ -2,7 +2,7 @@ const Category = require('../models/category');
 const asyncHandler = require('express-async-handler');
 
 // Display list of all categories
-exports.categorylist = asyncHandler(async (req, res, next) => {
+exports.category_list = asyncHandler(async (req, res, next) => {
   res.send('NOT IMPLEMENTED: Category list');
 });
 
@@ -32,7 +32,7 @@ exports.category_delete_post = asyncHandler(async (req, res, next) => {
 });
 
 // Display Category update form on GET
-exports.category_update_post = asyncHandler(async (req, res, next) => {
+exports.category_update_get = asyncHandler(async (req, res, next) => {
   res.send('NOT IMPLEMENTED: Category update GET');
 });
 
