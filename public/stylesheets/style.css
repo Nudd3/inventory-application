@@ -1,8 +1,64 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
-  padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  background-color: #fafafa;
+}
+
+ul {
+  list-style: none;
 }
 
 a {
-  color: #00B7FF;
+  text-decoration: none;
+  color: black;
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 25px 25px;
+  background-color: #fecdd3;
+}
+
+.navbar-title {
+  font-size: 1.2rem;
+}
+
+.navbar-navigation > ul{
+  display: flex;
+  gap: 1rem;
+}
+
+.navbar-navigation > ul > li > a{
+  font-size: 1.2rem;
+}
+
+.navbar-navigation > ul > li > a:hover{
+  color: grey;
+}
+
+.main-content {
+  padding: 0 25px;
+}
+
+
+
+
+.text-success {
+  color: green;
+}
+
+.text-warning {
+  color: orange;
+}
+
+.text-danger {
+  color: red;
 }

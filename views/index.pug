@@ -1,5 +1,10 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+  p Welcome to this #[em Inventory Application]. Feel free to add, remove and update items.
+
+  p At this moment. The application has the following: 
+
+  ul.test
+    li #[strong Categories:] !{category_count}
+    li #[strong Items:] !{item_count}

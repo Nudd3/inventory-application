@@ -1,18 +1,55 @@
 const Item = require('../models/item');
+const Category = require('../models/category');
+
 const asyncHandler = require('express-async-handler');
+// const { body, validationResult } = require('express-validator');
 
 exports.index = asyncHandler(async (req, res, next) => {
-  res.send('NOT IMPLEMENTED: Site Home Page');
+  const [
+    numCategories,
+    numItems,
+  ] = await Promise.all([
+    Category.countDocuments({}).exec(),
+    Item.countDocuments({}).exec(),
+  ]);
+
+  res.render('index', {
+    title: 'Inventory Application Home',
+    category_count: numCategories,
+    item_count: numItems,
+  });
 });
 
 // Display list of all items
 exports.item_list = asyncHandler(async (req, res, next) => {
-  res.send('NOT IMPLEMENTED: Item list');
+  const allItems = await Item.find({}, 'name price')
+    .sort({ name: 1 })
+    .populate('price')
+    .exec();
+
+  res.render('item_list', { 
+    title: 'Item List', 
+    item_list: allItems 
+  });
 });
 
 // Display detail page for a specific item
 exports.item_detail = asyncHandler(async (req, res, next) => {
-  res.send(`NOT IMPLEMENTED: Item detail: ${req.params.id}`);
+  const item = await Item.findById(req.params.id)
+    .populate('category')
+    .exec();
+
+  if (item === null) {
+    // No result
+    const err = new Error('Item not found');
+    err.status = 404;
+    return next(err);
+  }
+
+  res.render('item_detail', {
+    title: 'Item:',
+    item: item,
+  });
 });
 
 // Display item create form on GET
