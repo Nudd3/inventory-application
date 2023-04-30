@@ -1,10 +1,11 @@
 const Category = require('../models/category');
 const Item = require('../models/item');
 const asyncHandler = require('express-async-handler');
+const { body, validationResult } = require('express-validator');
 
 // Display list of all categories
 exports.category_list = asyncHandler(async (req, res, next) => {
-  const allCategories = await Category.find({}, 'name description')
+  const allCategories = await Category.find({}, 'name description');
 
   res.render('category_list', {
     title: 'Category List',
@@ -34,14 +35,54 @@ exports.category_detail = asyncHandler(async (req, res, next) => {
 });
 
 // Display Category create form on GET
-exports.category_create_get = asyncHandler(async (req, res, next) => {
-  res.send('NOT IMPLEMENTED: Category create GET');
-});
+exports.category_create_get = (req, res, next) => {
+  res.render('category_form', { title: 'Create Category' });
+};
 
 // Display Category create form on POST
-exports.category_create_post = asyncHandler(async (req, res, next) => {
-  res.send('NOT IMPLEMENTED: Category create POST');
-});
+exports.category_create_post = [
+  // Validate and sanitize the name and description fields
+  body('name', 'Category name must be at least 3 characters long')
+    .trim()
+    .isLength({ min: 3 })
+    .escape(),
+  body('description', 'Category description must be present and between 3 and 100 characters')
+    .trim()
+    .isLength({ min: 3, max: 100 })
+    .escape(),
+
+  // Process request after validation and sanitization
+  asyncHandler(async (req, res, next) => {
+    // Extract the validation errors from a request
+    const errors = validationResult(req);
+
+    // Create a category object with escaped and timmed data
+    const category = new Category({ name: req.body.name, description: req.body.description });
+
+    if (!errors.isEmpty()) {
+      // Errors! Render the form again with sanitized values/error messages
+      res.render('category_form', {
+        title: 'Create Category',
+        category: category,
+        errors: errors.array(),
+      });
+      return;
+    } else {
+      // Form data is valid
+      // Check if Category already exists
+      const categoryExists = await Category.findOne({ name: req.body.name }).exec();
+
+      if (categoryExists) {
+        // Already exists. Redirect to its detail page
+        res.redirect(categoryExists.url);
+      } else {
+        await Category.save();
+        // New category saved. Redirect to its detail page
+        res.redirect(category.url);
+      }
+    }
+  }),
+];
 
 // Display Category delete form on GET
 exports.category_delete_get = asyncHandler(async (req, res, next) => {
