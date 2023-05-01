@@ -1,27 +1,27 @@
 extends layout 
 
 block content 
+  div.delete-page
+    h1.section.title #{title}: #{item.name}
 
-  h1 #{title}: #{item.name}
 
-  p #[strong Do you really want to the delete this item?]
+    div.delete-item-info
+      p.delete-warning #[strong Do you really want to the delete this item?]
+      p #[strong Description:] #{item.description}
 
-  div
-    p #[strong Description:] #{item.description}
+      p #[strong Category:] #{item.category.name}
 
-    p #[strong Category:] #{item.category}
+      p #[strong Price:] $#{item.price}
 
-    p #[strong Price:] #{item.price}
-
-    p #[strong Number in stock:]
-      if item.nrInStock >= 10
-        span.text-success  #{item.nrInStock}
-      else if item.nrInStock == 0
-        span.text-danger #{item.nrInStock}
-      else 
-        span.text-warning #{item.nrInStock}
-  
-  form(method='POST' action='')
-    div.form-group 
-      input#id.form-control(type='hidden', name='id', required='true', value=item._id )
-    button.btn-btn-primary(type='submit') Delete
+      p #[strong Number in stock:] 
+        if item.nrInStock >= 10
+          span.text-success  #{item.nrInStock}
+        else if item.nrInStock == 0
+          span.text-danger #{item.nrInStock}
+        else 
+          span.text-warning #{item.nrInStock}
+    
+    form(method='POST' action='')
+      div.form-group 
+        input#id.form-control(type='hidden', name='id', required='true', value=item._id )
+      button.btn.btn-delete(type='submit') Delete

@@ -48,7 +48,7 @@ a {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding-top: 25px;
+  padding: 25px 0;
 }
 
 /* HOME PAGE */
@@ -99,6 +99,71 @@ a {
   gap: 1rem;
 }
 
+/* DELETE PAGES */
+
+.delete-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.delete-item-info {
+  padding: 25px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.delete-category-info{
+  padding: 25px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.delete-category-list {
+  text-align: center;
+}
+
+.delete-category-form-section {
+  padding-top: 25px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.delete-warning {
+  font-size: 1.1rem;
+}
+
+/* FORM PAGES */
+.form-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: 1rem;
+}
+
+.form-control {
+  display: block;
+  width: 100%;
+  font-size: 1rem;
+  line-height: 1.5;
+  border: 1px solid black;
+  border-radius: 5px;
+}
 
 /* OTHER */
 
@@ -131,5 +196,25 @@ a {
 
 .text-danger {
   color: red;
+}
+
+.btn {
+  border: none;
+  border-radius: 5px;
+  padding: 8px 20px;
+  font-size: 1rem;
+}
+
+.btn-delete {
+  background-color: rgb(237, 118, 118);
+}
+
+.btn-add {
+  background-color: rgb(118, 237, 144);
+}
+
+.btn:hover {
+  cursor: pointer;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
 }
 
