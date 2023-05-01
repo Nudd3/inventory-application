@@ -1,10 +1,11 @@
 extends layout
 
 block content
-  p Welcome to this #[em Inventory Application]. Feel free to add, remove and update items.
+  div.home-content
+    p Welcome to this #[strong Node.js] #[em Inventory Application] build with #[strong Express]. Users can Create, Update or Delete Items and Categories.
 
-  p At this moment. The application has the following: 
+    p At this moment. The application has the following: 
 
-  ul.test
-    li #[strong Categories:] !{category_count}
-    li #[strong Items:] !{item_count}
+    ul.home-information
+      li #[strong Categories:] !{category_count}
+      li #[strong Items:] !{item_count}

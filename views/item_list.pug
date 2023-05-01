@@ -1,13 +1,14 @@
 extends layout 
 
 block content 
-  h1= title
+  div.list-page-content
+    h1.section-title= title
 
-  ul
-    each item in item_list
-      li
-        a(href=item.url) #{item.name}
-        |   ($#{item.price})
+    ul.list
+      each item in item_list
+        li
+          a.list-item(href=item.url) #{item.name}
+          p.list-item-description $#{item.price}
 
-    else 
-      li There are no items.
+      else 
+        li There are no items.
