@@ -2,7 +2,7 @@ const Item = require('../models/item');
 const Category = require('../models/category');
 
 const asyncHandler = require('express-async-handler');
-// const { body, validationResult } = require('express-validator');
+const { body, validationResult } = require('express-validator');
 
 exports.index = asyncHandler(async (req, res, next) => {
   const [
@@ -54,22 +54,92 @@ exports.item_detail = asyncHandler(async (req, res, next) => {
 
 // Display item create form on GET
 exports.item_create_get = asyncHandler(async (req, res, next) => {
-  res.send('NOT IMPLEMENTED: Item create GET');
+  // Get all the items and all the categories
+  const [allItems, allCategories] = await Promise.all([
+    Item.find().exec(),
+    Category.find().exec(),
+  ]);
+
+  res.render('item_form', {
+    title: 'Create Item',
+    item_list: allItems,
+    categories: allCategories,
+  });
 });
 
 // Display item create form on POST
-exports.item_create_post = asyncHandler(async (req, res, next) => {
-  res.send('NOT IMPLEMENTED: Item create POST');
-});
+exports.item_create_post = [
+  // Validate and sanitize fields:
+  // name, description, category, price, numberInStock
+  body('name', 'Name field must not be empty')
+    .trim()
+    .isLength({ min: 1 })
+    .withMessage('Name needs to be at least 3 characters long')
+    .isLength({ max: 100 })
+    .withMessage('Name length cannot exceed 100 characters')
+    .escape(),
+  body('description', 'description field must not be empty')
+    .trim()
+    .isLength({ min: 10 })
+    .withMessage('Description needs to be at least 3 characters long')
+    .isLength({ max: 100})
+    .withMessage('Description length cannot exceed 100 characters')
+    .escape(),
+  body('price')
+    .isNumeric(),
+  body('nrInStock')
+    .isNumeric(),
+
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
+
+    const item = new Item({
+      name: req.body.name,
+      description: req.body.description,
+      category: req.body.category,
+      price: req.body.price,
+      nrInStock: req.body.nrInStock,
+    });
+
+    if (!errors.isEmpty()) {
+      // There are errors
+      // Render form again with sanitized values/errors messages
+
+      const allCategories = await Category.find().exec();
+
+      res.render('item_form', {
+        title: 'Create Item',
+        categories: allCategories,
+        item: item,
+        errors: errors.array(),
+      }); 
+    } else {
+      // Form inputs are valid. Save item
+      await item.save();
+      res.redirect(item.url);
+    }
+  })
+];
 
 // Display item delete form on GET
 exports.item_delete_get = asyncHandler(async (req, res, next) => {
-  res.send('NOT IMPLEMENTED: Item delete GET');
+  const item = await Item.findById(req.params.id).exec();
+
+  if (item === null) {
+    // Doesn't exist
+    res.redirect('/items');
+  }
+
+  res.render('item_delete', {
+    title: 'Delete Item',
+    item: item,
+  });
 });
 
 // Display item delete form on POST
 exports.item_delete_post = asyncHandler(async (req, res, next) => {
-  res.send('NOT IMPLEMENTED: Item delete POST');
+  await Item.findByIdAndRemove(req.body.id);
+  res.redirect('/items');
 });
 
 // Display item update form on GET

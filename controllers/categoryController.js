@@ -76,7 +76,7 @@ exports.category_create_post = [
         // Already exists. Redirect to its detail page
         res.redirect(categoryExists.url);
       } else {
-        await Category.save();
+        await category.save();
         // New category saved. Redirect to its detail page
         res.redirect(category.url);
       }
@@ -86,20 +86,104 @@ exports.category_create_post = [
 
 // Display Category delete form on GET
 exports.category_delete_get = asyncHandler(async (req, res, next) => {
-  res.send('NOT IMPLEMENTED: Category delete GET');
+  // Get details of category
+  const [category, itemsInCategory] = await Promise.all([
+    Category.findById(req.params.id).exec(),
+    Item.find({ category: req.params.id }, 'name price').exec(),
+  ]);
+
+  if (category === null) {
+    res.redirect('/categories');
+  }
+
+  res.render('category_delete', {
+    title: 'Delete Category',
+    category: category,
+    category_items: itemsInCategory,
+  });
+
 });
 
 // Display Category delete form on POST
 exports.category_delete_post = asyncHandler(async (req, res, next) => {
-  res.send('NOT IMPLEMENTED: Category delete POST');
+  const [category, itemsInCategory] = await Promise.all([
+    Category.findById(req.params.id).exec(),
+    Item.find({ category: req.params.id }, 'name price').exec(),
+  ]);
+
+  if (itemsInCategory.length > 0) {
+    // Category has items => Cannot be deleted
+    // Render in the same way as for GET route
+    res.render('category_delete', {
+      title: 'Delete Category',
+      category: category,
+      category_items: itemsInCategory,
+    });
+    return
+  } else {
+    // Category has no items => can be deleted
+    await Category.findByIdAndRemove(req.body.categoryid);
+    res.redirect('/categories');
+  }
 });
 
 // Display Category update form on GET
 exports.category_update_get = asyncHandler(async (req, res, next) => {
-  res.send('NOT IMPLEMENTED: Category update GET');
+  const [category, allItems] = await Promise.all([
+    Category.findById(req.params.id).exec(),
+    Item.find().exec(),
+  ]);
+
+  if (category === null) {
+    const err = new Error('Category not found');
+    err.status = 404;
+    return next(err);
+  }
+
+  res.render('category_form', {
+    title: 'Update Category',
+    category: category,
+    items: allItems,
+  });
 });
 
 // Display Category update form on POST
-exports.category_update_post = asyncHandler(async (req, res, next) => {
-  res.send('NOT IMPLEMENTED: Category update POST');
-});
+exports.category_update_post = [
+
+  // Validate and sanitize the name and description fields
+   body('name', 'Category name must be at least 3 characters long')
+   .trim()
+   .isLength({ min: 3 })
+   .escape(),
+ body('description', 'Category description must be present and between 3 and 100 characters')
+   .trim()
+   .isLength({ min: 3, max: 100 })
+   .escape(),
+
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
+
+    // Create a Category object with the new values and old id
+    const category = new Category({
+      name: req.body.name,
+      description: req.body.description,
+      _id: req.params.id,
+    });
+
+    if (!errors.isEmpty()) {
+      // Errors. re-render form
+      const allItems = await Item.find().exec();
+
+      res.render('category_form', {
+        title: 'Update Category',
+        items: allItems,
+        category: category,
+        errors: errors.array(),
+      });
+      return;
+    } else {
+      const theCategory = await Category.findByIdAndUpdate(req.params.id, category, {});
+      res.redirect(theCategory.url);
+    }
+  }),
+];
