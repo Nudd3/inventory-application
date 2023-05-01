@@ -53,13 +53,13 @@ a {
 
 /* HOME PAGE */
 .home-content {
-  width: 100%;
-  height: 100%;
+  width: 75%;
   padding: 25px 25px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 25px;
 }
 
 .home-content > p {
@@ -85,13 +85,33 @@ a {
   box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
 }
 
+/* DETAIL PAGES */
+.detail-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  font-size: 1rem;
+}
+
+.upper-detail-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
 
 /* OTHER */
 
 .section-title {
-  padding-bottom: 25px;
+  /* padding-bottom: 25px; */
 }
+
+.sub-title {
+  font-size: 1.5rem;
+}
+
 .list {
+  padding-top: 25px;
   display: flex;
   flex-direction: column;
   gap: 1rem;

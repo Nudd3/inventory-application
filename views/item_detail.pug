@@ -1,25 +1,26 @@
 extends layout 
 
 block content 
+  div.detail-page
+    h1 #{item.name}
+    div.upper-detail-page
+      p #[strong Description:] #{item.description}
 
-  h1 #{item.name}
+      p #[strong Category:] #{item.category.name}
 
-  p #[strong Description:] #{item.description}
+      p #[strong Price:] $#{item.price}
 
-  p #[strong Category:] #{item.category.name}
+      p #[strong Number in stock:] 
+        if item.nrInStock >= 10
+          span.text-success #{item.nrInStock}
+        else if item.nrInStock > 0 && item.nrInStock < 10
+          span.text-warning #{item.nrInStock}
+        else 
+          span.text-danger #{item.nrInStock}
 
-  p #[strong Price:] $#{item.price}
-
-  p #[strong Number in stock:] 
-    if item.nrInStock >= 10
-      span.text-success #{item.nrInStock}
-    else if item.nrInStock > 0 && item.nrInStock < 10
-      span.text-warning #{item.nrInStock}
-    else 
-      span.text-danger #{item.nrInStock}
-
-  hr
-  p 
-    a(href=item.url+'/delete') Delete Item 
-  p 
-    a(href=item.url+'/update') Update Item
+    hr
+    div.lower-detail-page
+      p 
+        a(href=item.url+'/delete') Delete Item 
+      p 
+        a(href=item.url+'/update') Update Item
