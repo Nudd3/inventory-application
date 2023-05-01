@@ -28,7 +28,7 @@ block content
 
     div.form-group
       label(for='nrInStock') Number in stock: 
-      input#nrInStock.form-control(type='number', placeholder='Amount in stock', required='true', value=(undefined===item ? '' : item.nrInStock))
+      input#nrInStock.form-control(type='number', placeholder='Amount in stock', name='nrInStock' required='true', value=(undefined===item ? '' : item.nrInStock))
 
     button.btn.btn-primary(type='submit') Submit
 

@@ -54,15 +54,11 @@ exports.item_detail = asyncHandler(async (req, res, next) => {
 
 // Display item create form on GET
 exports.item_create_get = asyncHandler(async (req, res, next) => {
-  // Get all the items and all the categories
-  const [allItems, allCategories] = await Promise.all([
-    Item.find().exec(),
-    Category.find().exec(),
-  ]);
+
+  const allCategories = await Category.find().exec();
 
   res.render('item_form', {
     title: 'Create Item',
-    item_list: allItems,
     categories: allCategories,
   });
 });
@@ -85,10 +81,10 @@ exports.item_create_post = [
     .isLength({ max: 100})
     .withMessage('Description length cannot exceed 100 characters')
     .escape(),
-  body('price')
-    .isNumeric(),
-  body('nrInStock')
-    .isNumeric(),
+  // body('price')
+  //   .isNumeric(),
+  // body('nrInStock')
+  //   .isNumeric(),
 
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
@@ -144,10 +140,69 @@ exports.item_delete_post = asyncHandler(async (req, res, next) => {
 
 // Display item update form on GET
 exports.item_update_get = asyncHandler(async (req, res, next) => {
-  res.send('NOT IMPLEMENTED: Item update GET');
+  const [item, categories] = await Promise.all([
+    Item.findById(req.params.id),
+    Category.find().exec(),
+  ]);
+
+  if (item === null) {
+    const err = new Error('Item not found');
+    err.status = 404;
+    return next(err);
+  }
+
+  res.render('item_form', {
+    title: 'Update Item',
+    item: item,
+    categories: categories,
+  });
 });
 
 // Display item update form on POST
-exports.item_update_post = asyncHandler(async (req, res, next) => {
-  res.send('NOT IMPLEMENTED: Item update POST');
-});
+exports.item_update_post = [
+  body('name', 'Name field must not be empty')
+    .trim()
+    .isLength({ min: 1 })
+    .withMessage('Name needs to be at least 3 characters long')
+    .isLength({ max: 100 })
+    .withMessage('Name length cannot exceed 100 characters')
+    .escape(),
+  body('description', 'description field must not be empty')
+    .trim()
+    .isLength({ min: 10 })
+    .isLength({ max: 100})
+    .escape(),
+  body('price', 'Price must be present')
+    .isNumeric(),
+  body('nrInStock', 'Number in stock must be present')
+    .isNumeric(),
+
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
+
+    const item = new Item({
+      name: req.body.name,
+      description: req.body.description,
+      category: req.body.category,
+      price: req.body.price,
+      nrInStock: req.body.nrInStock,
+      _id: req.params.id,
+    });
+
+    if (!errors.isEmpty()) {
+      const allCategories = await Category.find().exec();
+
+      res.render('item_form', {
+        title: 'Update Item',
+        categories: allCategories,
+        item: item,
+        errors: errors.array(),
+      }); 
+      return;
+    } else {
+
+      await Item.findByIdAndUpdate(req.params.id, item, {});
+      res.redirect(item.url);
+    }
+  }),
+];

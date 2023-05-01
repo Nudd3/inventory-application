@@ -129,10 +129,8 @@ exports.category_delete_post = asyncHandler(async (req, res, next) => {
 
 // Display Category update form on GET
 exports.category_update_get = asyncHandler(async (req, res, next) => {
-  const [category, allItems] = await Promise.all([
-    Category.findById(req.params.id).exec(),
-    Item.find().exec(),
-  ]);
+
+  const category = await Category.findById(req.params.id).exec();
 
   if (category === null) {
     const err = new Error('Category not found');
@@ -143,7 +141,6 @@ exports.category_update_get = asyncHandler(async (req, res, next) => {
   res.render('category_form', {
     title: 'Update Category',
     category: category,
-    items: allItems,
   });
 });
 
@@ -172,11 +169,9 @@ exports.category_update_post = [
 
     if (!errors.isEmpty()) {
       // Errors. re-render form
-      const allItems = await Item.find().exec();
 
       res.render('category_form', {
         title: 'Update Category',
-        items: allItems,
         category: category,
         errors: errors.array(),
       });
