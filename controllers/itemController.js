@@ -14,7 +14,6 @@ exports.index = asyncHandler(async (req, res, next) => {
   ]);
 
   res.render('index', {
-    title: 'Inventory Application Home',
     category_count: numCategories,
     item_count: numItems,
   });
@@ -70,21 +69,17 @@ exports.item_create_post = [
   body('name', 'Name field must not be empty')
     .trim()
     .isLength({ min: 1 })
-    .withMessage('Name needs to be at least 3 characters long')
+    .withMessage('Name needs to be at least 1 characters long')
     .isLength({ max: 100 })
     .withMessage('Name length cannot exceed 100 characters')
     .escape(),
   body('description', 'description field must not be empty')
     .trim()
     .isLength({ min: 10 })
-    .withMessage('Description needs to be at least 3 characters long')
+    .withMessage('Description needs to be at least 10 characters long')
     .isLength({ max: 100})
     .withMessage('Description length cannot exceed 100 characters')
     .escape(),
-  // body('price')
-  //   .isNumeric(),
-  // body('nrInStock')
-  //   .isNumeric(),
 
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
@@ -163,14 +158,16 @@ exports.item_update_post = [
   body('name', 'Name field must not be empty')
     .trim()
     .isLength({ min: 1 })
-    .withMessage('Name needs to be at least 3 characters long')
+    .withMessage('Name needs to be at least 1 characters long')
     .isLength({ max: 100 })
     .withMessage('Name length cannot exceed 100 characters')
     .escape(),
   body('description', 'description field must not be empty')
     .trim()
     .isLength({ min: 10 })
+    .withMessage('Description needs to be at least 10 characters long')
     .isLength({ max: 100})
+    .withMessage('Description length cannot exceed 100 characters')
     .escape(),
   body('price', 'Price must be present')
     .isNumeric(),
