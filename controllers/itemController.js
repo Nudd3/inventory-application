@@ -169,10 +169,6 @@ exports.item_update_post = [
     .isLength({ max: 100})
     .withMessage('Description length cannot exceed 100 characters')
     .escape(),
-  body('price', 'Price must be present')
-    .isNumeric(),
-  body('nrInStock', 'Number in stock must be present')
-    .isNumeric(),
 
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
