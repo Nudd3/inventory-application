@@ -29,7 +29,7 @@ block content
 
       div.form-group
         label(for='nrInStock') Number in stock: 
-        input#nrInStock.form-control(type='number', placeholder='Amount in stock', name='nrInStock' required='true', value=(undefined===item ? '' : item.nrInStock))
+        input#nrInStock.form-control(type='number', step="0.01" placeholder='Amount in stock', name='nrInStock' required='true', value=(undefined===item ? '' : item.nrInStock))
 
       button.btn.btn-add(type='submit') Submit
 
